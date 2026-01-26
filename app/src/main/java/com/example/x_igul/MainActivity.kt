@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.GridLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,14 +16,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.x_igul.objects.Result
 import com.example.x_igul.objects.XIgul
 import com.example.x_igul.ui.theme.X_igulTheme
 
 class MainActivity : ComponentActivity() {
     private var board = Array(3) { Array(3) {""} }
     private var turn = "X"
-    private var winner = ""
-    private lateinit var currentPlayerTExtView: TextView
+    //private var winner = ""
+    private lateinit var currentPlayerTextView: TextView
     private var isGameFinished = false
     private lateinit var buttons: Array<Array<Button>>
     private lateinit var game: XIgul
@@ -35,8 +37,8 @@ class MainActivity : ComponentActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        game = XIgul()
 
+        game = XIgul()
         buttons = Array(3) { row ->
             Array(3) { column ->
                 Button(this).apply {
@@ -72,15 +74,27 @@ class MainActivity : ComponentActivity() {
         updateBoard()
     }
     private fun handleMove(row: Int, column: Int) {
-        game.move(row, column)
-        updateBoard()
+        if (game.validateTurn(row, column)) {
+            game.move(row, column)
+            updateBoard()
+            val winner = game.checkForWinner()
+            if (winner != null) {
+                val message = "The Winner is " + when (winner) {
+                    Result.X -> "Player X!!!"
+                    Result.O -> "Player O!!!"
+                    Result.DRAW -> "Nobody - It's a Drow"
+                }
+                Toast.makeText(this,message, Toast.LENGTH_LONG).show()
+                game.reset()
+            }
+        }
     }
     private fun updateBoard() {
         val board = game.board
         for (row in board.indices) {
             for (column in board[row].indices) {
                 buttons[row][column].text = board[row][column].toString()
-                buttons[row][column].isEnabled = board[row][column] == " "
+                buttons[row][column].isEnabled = board[row][column] == ' '
             }
         }
     }
