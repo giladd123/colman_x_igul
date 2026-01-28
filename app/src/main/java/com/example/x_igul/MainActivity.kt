@@ -82,7 +82,7 @@ class MainActivity : ComponentActivity() {
                 val message = "The Winner is " + when (winner) {
                     Result.X -> "Player X!!!"
                     Result.O -> "Player O!!!"
-                    Result.DRAW -> "Nobody - It's a Drow"
+                    Result.DRAW -> "Nobody - It's a Draw"
                 }
                 Toast.makeText(this,message, Toast.LENGTH_LONG).show()
                 game.reset()
@@ -97,21 +97,5 @@ class MainActivity : ComponentActivity() {
                 buttons[row][column].isEnabled = board[row][column] == ' '
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    X_igulTheme {
-        Greeting("Android")
     }
 }
